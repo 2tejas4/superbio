@@ -327,9 +327,7 @@ body {
             
             <iframe class="slide-up smart-yt" style="transition-delay: 0.2s;" data-link="https://youtu.be/dRH1tTUM2fI?si=gz6fXa4n2JquZOph" title="Sample 3" allowfullscreen></iframe>
             
-            <iframe class="slide-up smart-yt" data-link="https://youtu.be/3c5-aSZTEuE?si=z54_HdfU9COLzMlM
-
-" title="Sample 4" allowfullscreen></iframe>
+            <iframe class="slide-up smart-yt" data-link="https://youtu.be/3c5-aSZTEuE?si=z54_HdfU9COLzMlM" title="Sample 4" allowfullscreen></iframe>
             
             <iframe class="slide-up smart-yt" style="transition-delay: 0.1s;" data-link="https://youtu.be/-lLDMErvDgk?si=6gPb3Qtvj-Ndyjwq" title="Sample 5" allowfullscreen></iframe>
             
@@ -361,7 +359,7 @@ body {
         setTimeout(() => {
             document.getElementById("loader").classList.add("hide-loader");
             setupScrollAnimations();
-            convertSmartYouTubeLinks(); // Naya JS Converter Run Kiya
+            convertSmartYouTubeLinks(); 
         }, 1600); 
     });
 
@@ -383,28 +381,29 @@ body {
         slideElements.forEach(el => observer.observe(el));
     }
 
-    // NAYA SMART LINK CONVERTER (Jo aapke 'youtu.be' ko automatically play hone layk banayega)
     function convertSmartYouTubeLinks() {
         document.querySelectorAll('.smart-yt').forEach(iframe => {
             const link = iframe.getAttribute('data-link');
             if (link && link.trim() !== "") {
                 let videoId = "";
-                // Agar link mein youtu.be hai
                 if (link.includes("youtu.be/")) {
                     videoId = link.split("youtu.be/")[1].split("?")[0];
                 } 
-                // Agar link mein watch?v= hai
                 else if (link.includes("watch?v=")) {
                     videoId = link.split("watch?v=")[1].split("&")[0];
                 } 
-                // Agar link mein shorts/ hai
                 else if (link.includes("shorts/")) {
                     videoId = link.split("shorts/")[1].split("?")[0];
                 }
 
-                // Agar ID mil gayi toh properly set kardo
                 if (videoId) {
-                    iframe.src = "https://www.youtube.com/embed/" + videoId;
+                    // Agar ye main top video-box ke andar hai, toh autoplay aur loop permissions apply karo
+                    if (iframe.closest('.video-box')) {
+                        iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+                        iframe.src = "https://www.youtube.com/embed/" + videoId + "?autoplay=1&mute=1&loop=1&playlist=" + videoId;
+                    } else {
+                        iframe.src = "https://www.youtube.com/embed/" + videoId;
+                    }
                 }
             }
         });
